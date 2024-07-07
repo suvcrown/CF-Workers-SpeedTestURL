@@ -4,11 +4,10 @@ export default {
     let url = new URL(request.url);
     let path = url.pathname.substring(1);
     let isSecure = url.protocol.startsWith("https");
-    let bytes;
-    // 判断路径是否为空
+    
     if (!path) {
-      // 路径为空，将 bytes 赋值为 200MB
-      bytes = 200000000;
+      // 路径为空，将 bytes 赋值为 200MB（此部分将被忽略，因为我们不再使用 bytes）
+      path = "200M";
     } else if (path === "locations") {
       let targetUrl = `http${isSecure ? 's' : ''}://speed.cloudflare.com/locations`;
       let cfRequest = new Request(targetUrl, request);
@@ -29,7 +28,7 @@ export default {
       const unit = match[2].toLowerCase();
 
       // 转换单位
-      bytes = parseInt(bytesStr, 10);
+      let bytes = parseInt(bytesStr, 10);
       if (unit === "k") {
         bytes *= 1000;
       } else if (unit === "m") {
@@ -39,7 +38,8 @@ export default {
       }
     }
 
-    let targetUrl = `http${isSecure ? 's' : ''}://speed.cloudflare.com/__down?bytes=${bytes}`;
+    // 使用固定的测速地址
+    let targetUrl = "https://speedtest.poorhub.pro/cf.7z";
     let cfRequest = new Request(targetUrl, request);
     let response = await fetch(cfRequest);
 
